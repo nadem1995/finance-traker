@@ -1,5 +1,7 @@
 <template>
-  <main class="border-2 border-gray-600 dark:border-gray-200 p-3 rounded-md mt-5">
+  <main
+    class="border-2 border-gray-600 dark:border-gray-200 p-3 rounded-md mt-5"
+  >
     <section>
       <div class="flex justify-between items-center">
         <h1 class="text-bold">Summary</h1>
@@ -40,16 +42,44 @@
       </div>
     </section>
 
-    <section class="mt-10 ">
-      <Transaction/>
-      <Transaction/>
-      <Transaction/>
-      <Transaction/>
+    <section class="mt-10">
+     <div v-for="(transactionsonDay,index) in transactionsGroupedByDate" :key="index">
+      <DailyTransactionSummary :date="date" :transactions="transactionsonDay"/>
+     <Transaction v-for="transaction in transactionsonDay" :key="transaction.id" :transaction="transaction"></Transaction>
+    </div>
     </section>
   </main>
 </template>
 
 <script setup>
-import { transactionsViewOptions } from "~/constants.js";
+import {transactionsViewOptions} from '~/constants.js';
 const selectedOption = ref(transactionsViewOptions[1]);
+
+const supabase = useSupabaseClient();
+
+const { data, pending } = await useAsyncData("transactions", async () => {
+  const { data, error } = await supabase.from("transactions").select();
+
+  if (error) {
+    return [];
+  }
+  return data;
+});
+const transactions = ref(data);
+
+const transactionsGroupedByDate = computed(() => {
+  let groups = {};
+  for (const transaction of transactions.value) {
+    const date = new Date(transaction.created_at).toISOString().split("T")[0];
+    if (!groups[date]) {
+      groups[date] = [];
+    }
+    groups[date].push(transaction);
+  }
+
+  return groups;
+});
+
+console.log(transactionsGroupedByDate);
+
 </script>

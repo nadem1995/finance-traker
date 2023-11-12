@@ -2,11 +2,14 @@
   <div class="border-b py-4 grid grid-cols-2">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-1">
-        <UIcon name="i-heroicons-arrow-up-right" class="text-green-600" />
-        <span>Slary</span>
+        <UIcon :name="icon" :class="iconColor" />
+        <div class="capitalize">{{transaction.description }}</div>
       </div>
-      <div><UBadge color="white" variant="solid">Badge</UBadge></div>
+      <div v-if="transaction.category">
+        <UBadge class="capitalize" color="white" variant="solid">{{ transaction.category }}</UBadge>
+      </div>
     </div>
+    
     <div class="flex items-center justify-end gap-1">
       <div>{{ currency }}</div>
       <div>
@@ -23,8 +26,21 @@
 </template>
 
 <script setup>
-const { currency } = useCurrency(3000);
+const props = defineProps({
+  transaction:Object
+});
+const isIncome = computed(()=>{
+  return props.transaction.type==='income'
+})
+const icon = computed (()=>{
+  return isIncome.value?'i-heroicons-arrow-up-right':'i-heroicons-arrow-down-right';
+})
 
+const iconColor = computed (()=>{
+  return isIncome.value?'text-green-600':'text-red-600';
+})
+
+const { currency } = useCurrency(props.transaction.amount);
 const items = [
   [
   {
