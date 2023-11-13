@@ -22,7 +22,7 @@
           <div>You have {{ incomes.length }} incomes and {{ expenses.length }} expenses this period</div>
         </div>
         <div>
-          <UButton icon="i-heroicons-plus-circle" color="white" variant="solid" label="Add"/>
+          <UButton icon="i-heroicons-plus-circle" color="white" variant="solid" label="Add" />
         </div>
       </div>
     </section>
@@ -86,31 +86,31 @@ const transactionsGroupedByDate = computed(() => {
   return groups;
 });
 
-const incomes = computed(()=>{
-  return transactions.value.filter((transaction)=> transaction.type==='income')
+const incomes = computed(() => {
+  return transactions.value.filter((transaction) => transaction.type === 'income')
 })
 
-const expenses = computed(()=>{
-  return transactions.value.filter((transaction)=> transaction.type==='expence')
+const expenses = computed(() => {
+  return transactions.value.filter((transaction) => transaction.type === 'expence')
 })
 
-const incomsTotal = computed(()=>{
-  let sum=0;
+const incomsTotal = computed(() => {
+  let sum = 0;
   incomes.value.forEach(income => {
-  sum += income.amount;
-});
+    sum += income.amount;
+  });
 
-return sum;
+  return sum;
 })
 
 
-const expensesTotal = computed(()=>{
-  let sum=0;
+const expensesTotal = computed(() => {
+  let sum = 0;
   expenses.value.forEach(expense => {
-  sum += expense.amount;
-});
+    sum += expense.amount;
+  });
 
-return sum;
+  return sum;
 })
 
 
