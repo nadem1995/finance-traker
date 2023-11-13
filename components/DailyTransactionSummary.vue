@@ -1,6 +1,6 @@
 <template>
   <div class="border-b py-4 grid grid-cols-2">
-    <div class="flex items-center justify-between">
+    <div class="ml-5 flex items-center justify-between">
       {{ props.date }}
     </div>
 
