@@ -8,17 +8,30 @@
     </section>
     <section>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 sm:gap-16 mt-5">
-        <Trend title="Income" :amount="4200" :last-amount="9000" :is-loading="false" />
-        <Trend title="Expense" :amount="4500" :last-amount="4000" :is-loading="false" />
+        <Trend title="Income" :amount="incomsTotal" :last-amount="9000" :is-loading="false" />
+        <Trend title="Expense" :amount="expensesTotal" :last-amount="15" :is-loading="false" />
         <Trend title="Investmense" :amount="3000" :last-amount="1100" :is-loading="false" />
         <Trend title="Saving" :amount="400" :last-amount="500" :is-loading="false" />
+      </div>
+    </section>
+
+    <section class="my-10">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-extrabold">Transactions</h2>
+          <div>You have {{ incomes.length }} incomes and {{ expenses.length }} expenses this period</div>
+        </div>
+        <div>
+          <UButton icon="i-heroicons-plus-circle" color="white" variant="solid" label="Add"/>
+        </div>
       </div>
     </section>
 
     <section class="mt-10">
       <div v-for="(transactionsonDay, date) in transactionsGroupedByDate" :key="date">
         <DailyTransactionSummary :date="date" :transactions="transactionsonDay" />
-        <Transaction @delete="refreshTransaction()" v-for="transaction in transactionsonDay" :key="transaction.id" :transaction="transaction">
+        <Transaction @delete="refreshTransaction()" v-for="transaction in transactionsonDay" :key="transaction.id"
+          :transaction="transaction">
         </Transaction>
       </div>
     </section>
@@ -28,36 +41,37 @@
 <script setup>
 import { transactionsViewOptions } from "~/constants.js";
 const selectedOption = ref(transactionsViewOptions[1]);
-
 const transactions = ref([])
-const isLoading= ref(false);
 
+
+const isLoading = ref(false);
 const supabase = useSupabaseClient();
 const featchTransactions = async () => {
-  isLoading.value=true;
-  try{
+  isLoading.value = true;
+  try {
     const { data } = await useAsyncData("transactions", async () => {
-    const { data, error } = await supabase.from("transactions").select();
-    if (error) {
-      return [];
-    }
-    return data;
-  });
+      const { data, error } = await supabase.from("transactions").select();
+      if (error) {
+        return [];
+      }
+      return data;
+    });
 
-  return data.value;
+    return data.value;
 
-  }catch(error){
+  } catch (error) {
     console.log(error);
-  }finally{
-    isLoading.value=false;
+  } finally {
+    isLoading.value = false;
   }
 }
 
-const refreshTransaction = async ()=>{
+const refreshTransaction = async () => {
   transactions.value = await featchTransactions();
 }
 
 await refreshTransaction();
+
 
 const transactionsGroupedByDate = computed(() => {
   let groups = {};
@@ -71,4 +85,33 @@ const transactionsGroupedByDate = computed(() => {
 
   return groups;
 });
+
+const incomes = computed(()=>{
+  return transactions.value.filter((transaction)=> transaction.type==='income')
+})
+
+const expenses = computed(()=>{
+  return transactions.value.filter((transaction)=> transaction.type==='expence')
+})
+
+const incomsTotal = computed(()=>{
+  let sum=0;
+  incomes.value.forEach(income => {
+  sum += income.amount;
+});
+
+return sum;
+})
+
+
+const expensesTotal = computed(()=>{
+  let sum=0;
+  expenses.value.forEach(expense => {
+  sum += expense.amount;
+});
+
+return sum;
+})
+
+
 </script>
