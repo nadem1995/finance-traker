@@ -22,7 +22,15 @@
           <div>You have {{ incomes.length }} incomes and {{ expenses.length }} expenses this period</div>
         </div>
         <div>
-          <UButton icon="i-heroicons-plus-circle" color="white" variant="solid" label="Add" />
+          <UModal v-model="isOpen">
+            <UCard>
+              <template #header>
+                Add transaction
+              </template>
+                Modal body
+            </UCard>
+          </UModal>
+          <UButton @click="isOpen = true" icon="i-heroicons-plus-circle" color="white" variant="solid" label="Add" />
         </div>
       </div>
     </section>
@@ -43,7 +51,7 @@ import { transactionsViewOptions } from "~/constants.js";
 const selectedOption = ref(transactionsViewOptions[1]);
 const transactions = ref([])
 
-
+const isOpen = ref(false);
 const isLoading = ref(false);
 const supabase = useSupabaseClient();
 const featchTransactions = async () => {
