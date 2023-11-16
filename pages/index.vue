@@ -22,14 +22,7 @@
           <div>You have {{ incomes.length }} incomes and {{ expenses.length }} expenses this period</div>
         </div>
         <div>
-          <UModal v-model="isOpen">
-            <UCard>
-              <template #header>
-                Add transaction
-              </template>
-                Modal body
-            </UCard>
-          </UModal>
+          <AppModal v-model="isOpen"/> 
           <UButton @click="isOpen = true" icon="i-heroicons-plus-circle" color="white" variant="solid" label="Add" />
         </div>
       </div>
