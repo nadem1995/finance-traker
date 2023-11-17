@@ -22,7 +22,7 @@
           <div>You have {{ incomes.length }} incomes and {{ expenses.length }} expenses this period</div>
         </div>
         <div>
-          <AppModal v-model="isOpen"/> 
+          <AppModal v-model="isOpen" @saved="refreshTransaction()"/> 
           <UButton @click="isOpen = true" icon="i-heroicons-plus-circle" color="white" variant="solid" label="Add" />
         </div>
       </div>
@@ -43,7 +43,6 @@
 import { transactionsViewOptions } from "~/constants.js";
 const selectedOption = ref(transactionsViewOptions[1]);
 const transactions = ref([])
-
 const isOpen = ref(false);
 const isLoading = ref(false);
 const supabase = useSupabaseClient();
@@ -113,6 +112,10 @@ const expensesTotal = computed(() => {
 
   return sum;
 })
+
+
+useFetchTransactions('Nadem');
+
 
 
 </script>
