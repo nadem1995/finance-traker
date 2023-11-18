@@ -41,21 +41,11 @@
 <script setup>
 import { transactionsViewOptions } from "~/constants.js";
 const selectedOption = ref(transactionsViewOptions[1]);
-const transactions = ref([])
-transactions.value= await useFetchTransactions()
-const isOpen = ref(false);
-const transactionsGroupedByDate = computed(() => {
-  let groups = {};
-  for (const transaction of transactions.value) {
-    const date = new Date(transaction.created_at).toISOString().split("T")[0];
-    if (!groups[date]) {
-      groups[date] = [];
-    }
-    groups[date].push(transaction);
-  }
 
-  return groups;
-});
+const {transactions}= await useFetchTransactions()
+
+const transactionsGroupedByDate = useFetchTransactionsByDate(transactions);
+const isOpen = ref(false);
 
 const incomes = computed(() => {
   return transactions.value.filter((transaction) => transaction.type === 'income')
@@ -82,5 +72,6 @@ const expensesTotal = computed(() => {
 
   return sum;
 })
+
 
 </script>
