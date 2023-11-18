@@ -14,7 +14,6 @@
         <Trend title="Saving" :amount="400" :last-amount="500" :is-loading="false" />
       </div>
     </section>
-
     <section class="my-10">
       <div class="flex items-center justify-between">
         <div>
@@ -43,36 +42,8 @@
 import { transactionsViewOptions } from "~/constants.js";
 const selectedOption = ref(transactionsViewOptions[1]);
 const transactions = ref([])
+transactions.value= await useFetchTransactions()
 const isOpen = ref(false);
-const isLoading = ref(false);
-const supabase = useSupabaseClient();
-const featchTransactions = async () => {
-  isLoading.value = true;
-  try {
-    const { data } = await useAsyncData("transactions", async () => {
-      const { data, error } = await supabase.from("transactions").select().order('created_at',{ascending:false});
-      if (error) {
-        return [];
-      }
-      return data;
-    });
-
-    return data.value;
-
-  } catch (error) {
-    console.log(error);
-  } finally {
-    isLoading.value = false;
-  }
-}
-
-const refreshTransaction = async () => {
-  transactions.value = await featchTransactions();
-}
-
-await refreshTransaction();
-
-
 const transactionsGroupedByDate = computed(() => {
   let groups = {};
   for (const transaction of transactions.value) {
@@ -103,7 +74,6 @@ const incomsTotal = computed(() => {
   return sum;
 })
 
-
 const expensesTotal = computed(() => {
   let sum = 0;
   expenses.value.forEach(expense => {
@@ -112,10 +82,5 @@ const expensesTotal = computed(() => {
 
   return sum;
 })
-
-
-useFetchTransactions('Nadem');
-
-
 
 </script>
